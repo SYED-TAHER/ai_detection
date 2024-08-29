@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Text Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI-Generated Text Detection</h1>
+        <form id="textForm">
+            <textarea name="text" id="text" rows="5" placeholder="Enter your text here..."></textarea>
+            <button type="submit">Analyze</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <!-- JavaScript to handle form submission -->
+    <script>
+        document.getElementById('textForm').addEventListener('submit', function (e) {
+            e.preventDefault();  // Prevent form submission
+            const text = document.getElementById('text').value;  // Get text from the textarea
+            fetch('/analyze', {
+                method: 'POST',  // Send a POST request
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `text=${encodeURIComponent(text)}`  // Encode text for URL
+            })
+            .then(response => response.json())  // Parse response as JSON
+            .then(data => {
+                document.getElementById('result').innerHTML = `AI Generated: ${data.result.is_ai_generated ? 'Yes' : 'No'}<br>Perplexity: ${data.result.perplexity.toFixed(2)}`;  // Display result
+            });
+        });
+    </script>
+</body>
+</html>
